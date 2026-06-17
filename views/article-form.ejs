@@ -1,0 +1,90 @@
+<div style="max-width:700px;">
+
+  <div class="panel" style="margin-bottom:10px;">
+    <div class="panel-header"><%= article ? "JSS SUR IL ES DEJA PARFE PK TU MODIFI" : "lache ton meilleur dossier" %></div>
+    <div class="panel-body">
+
+      <% if (error) { %>
+        <div class="form-error"><%= error %></div>
+      <% } %>
+
+      <form id="article-form" action="<%= article ? '/article/' + article.id + '/edit' : '/article/new' %>" method="POST" enctype="multipart/form-data">
+
+        <!-- TITLE -->
+        <div class="form-group">
+          <label>Titre de l'article</label>
+          <input type="text" name="title" value="<%= article ? article.title : '' %>" placeholder="Titre..." required>
+        </div>
+
+        <!-- EDITOR TOOLBAR -->
+        <div class="form-group">
+          <label>Contenu</label>
+          <div class="editor-toolbar" id="editor-toolbar">
+            <button type="button" data-cmd="bold" title="Gras"><strong>G</strong></button>
+            <button type="button" data-cmd="italic" title="Italique"><em>I</em></button>
+            <button type="button" data-cmd="underline" title="Souligné"><u>S</u></button>
+            <div class="separator"></div>
+            <button type="button" data-cmd="justifyLeft" title="Aligner à gauche">⬅</button>
+            <button type="button" data-cmd="justifyCenter" title="Centrer">↔</button>
+            <button type="button" data-cmd="justifyRight" title="Aligner à droite">➡</button>
+            <div class="separator"></div>
+            <select id="font-size-select" title="Taille du texte">
+              <option value="1">Très petit</option>
+              <option value="2">Petit</option>
+              <option value="3" selected>Normal</option>
+              <option value="4">Grand</option>
+              <option value="5">Très grand</option>
+              <option value="6">Énorme</option>
+              <option value="7">Géant</option>
+            </select>
+            <div class="separator"></div>
+            <label title="Couleur du texte" style="display:flex;align-items:center;gap:3px;font-size:10px;color:#aaa;">
+              🎨
+              <input type="color" id="text-color-picker" value="#ffffff" title="Couleur du texte">
+            </label>
+            <div class="separator"></div>
+            <button type="button" data-cmd="strikeThrough" title="Barré"><s>S</s></button>
+            <button type="button" data-cmd="insertUnorderedList" title="Liste">• Liste</button>
+          </div>
+          <div id="article-editor" contenteditable="true"><%- article ? article.content : '' %></div>
+          <input type="hidden" name="content" id="article-content-input" value="">
+        </div>
+
+        <!-- EXISTING PHOTOS (edit mode) -->
+        <% if (article && article.photos && article.photos.length > 0) { %>
+          <div class="form-group">
+            <label>Photos existantes <small style="color:#888;">(cocher pour supprimer)</small></label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px;background:#111;border:1px solid #333;">
+              <% article.photos.forEach(function(photo) { %>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                  <img src="/uploads/<%= photo.filename %>" alt="" style="width:80px;height:80px;object-fit:cover;border:2px solid #333;">
+                  <label style="font-size:10px;color:#e87070;cursor:pointer;">
+                    <input type="checkbox" name="delete_photos[]" value="<%= photo.id %>"> Supprimer
+                  </label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- NEW PHOTOS UPLOAD -->
+        <div class="form-group">
+          <label>Ajouter des photos</label>
+          <div class="photo-upload-area">
+            <h4>📷 Photos</h4>
+            <div id="photo-previews"></div>
+            <button type="button" id="add-photo-btn" class="btn btn-secondary" style="margin-top:6px;">+ Ajouter une photo</button>
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button type="submit" class="btn"><%= article ? '💾 Enregistrer' : '📝 Publier' %></button>
+          <a href="<%= article ? '/article/' + article.id : '/' %>" class="btn btn-secondary">Annuler</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

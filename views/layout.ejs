@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' — ' : '' %>Skyblog des Jumelles 🎂</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="balloon-parallax" aria-hidden="true">
+    <div class="balloon-column balloon-left">
+      <img src="/img/ballons/ballon1.png" alt="">
+      <img src="/img/ballons/ballon2.png" alt="">
+      <img src="/img/ballons/ballon3.png" alt="">
+      <img src="/img/ballons/ballon4.png" alt="">
+    </div>
+    <div class="balloon-column balloon-center">
+      <img src="/img/ballons/ballon5.png" alt="">
+      <img src="/img/ballons/ballon1.png" alt="">
+      <img src="/img/ballons/ballon3.png" alt="">
+      <img src="/img/ballons/ballon2.png" alt="">
+      <img src="/img/ballons/ballon4.png" alt="">
+      <img src="/img/ballons/ballon5.png" alt="">
+      <img src="/img/ballons/ballon2.png" alt="">
+    </div>
+    <div class="balloon-column balloon-right">
+      <img src="/img/ballons/ballon4.png" alt="">
+      <img src="/img/ballons/ballon5.png" alt="">
+      <img src="/img/ballons/ballon1.png" alt="">
+      <img src="/img/ballons/ballon2.png" alt="">
+    </div>
+  </div>
+
+  <!-- SKYBLOG BANNER -->
+  <header id="skyrock-banner">
+    <a href="/" class="logo">
+      <span class="star">★</span>
+      <span>SKY</span>ROCK
+      <small style="font-size:15px;color:#888;font-weight:normal;margin-left:4px;">Ici T Libre !</small>
+    </a>
+    <nav>
+      <a href="/">la päaÂaäge dé b3staAAaaäAäaahhhss</a>
+    </nav>
+    <div class="auth-links">
+      <% if (user) { %>
+        <span style="font-size:15;color:#aaa;">kikoo <strong style="color:#ff69b4;"><%= user.username %></strong>, sava tfk ????</span>
+        <a href="/article/new" class="btn-banner">+ P0sT</a>
+        <form method="POST" action="/logout" style="display:inline;">
+          <button type="submit" class="btn-banner outline">bébou part pas :'(((((</button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="btn-banner outline">connekssion</a>
+        <a href="/register" class="btn-banner">inscripssiiion <3</a>
+      <% } %>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <div id="wrapper">
+
+    <!-- LEFT SIDEBAR -->
+    <aside id="left-sidebar">
+      <div style="background:#1a1a1a;border:1px solid #333;margin-bottom:8px;">
+        <div id="blog-name">pqtplv <33333</div>
+        <div id="blog-avatar">
+          <img src="/img/avatar.jpg" alt="avatar" style="cursor:pointer;" onclick="openLightbox('/img/avatar.jpg', 'elles sont trop belles <3')">
+          <div id="blog-username">eh moi aussi un jour j'aurai 30 ans kev adams tavu</div>
+        </div>
+        <div id="blog-desc">
+          cé lé 30 an de nos jumelle prèèêééé3ềeèeèééff :$:$ azi vi1 lache ton meilleur post pr elle ;P^^xD
+        </div>
+        <ul class="action-links">
+          <% if (user) { %>
+            <li><a href="/article/new"><span class="icon">✏️</span>ou sinn ici ^^<span class="icon">✏️</span></a></li>
+          <% } else { %>
+            <li><a href="/login"><span class="icon">💌</span>connekssion</a></li>
+            <li><a href="/register"><span class="icon">⭐</span> inscripssçion</a></li>
+          <% } %>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content">
+      <%- body %>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside id="right-sidebar">
+
+      <!-- INFOS -->
+      <div class="panel">
+        <div class="panel-header">lé stastitiks</div>
+        <div class="panel-body" style="padding:6px 8px;">
+          <div class="info-row">
+            <span class="label">Créé le :</span>
+            <span class="value">2009-07-18</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Mis à jour :</span>
+            <span class="value"><%= stats && stats.last_article ? stats.last_article.substring(0,10) : '—' %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Articles :</span>
+            <span class="value"><%= stats ? stats.article_count : 0 %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Visites :</span>
+            <span class="value"><%= stats ? stats.visits*123 : 0 %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPOTIFY -->
+      <div class="panel">
+        <div class="panel-header">la compil dé vréèèéëê B)</div>
+        <div id="spotify-player">
+          <!-- filled by Spotify IFrame API -->
+        </div>
+      </div>
+
+      <!-- PHOTO GALLERY -->
+      <div class="panel">
+        <div class="panel-header">tro la fiche xD</div>
+        <% if (sidebarPhotos && sidebarPhotos.length > 0) { %>
+          <div class="photo-grid">
+            <% sidebarPhotos.forEach(function(photo, i) { %>
+              <div class="photo-grid-item"
+                   data-src="/uploads/<%= photo.filename %>"
+                   data-caption="<%- JSON.stringify(photo.caption || '') %>"
+                   data-index="<%= i %>"
+                   style="cursor: pointer;">
+                <img src="/uploads/<%= photo.filename %>" alt="<%= photo.caption || '' %>" loading="lazy">
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="panel-body" style="color:#666;font-size:10px;text-align:center;padding:10px;">ya R</div>
+        <% } %>
+      </div>
+
+    </aside>
+
+  </div><!-- /#wrapper -->
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox">
+    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightbox-img" src="" alt="">
+    <div id="lightbox-caption"></div>
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+  <script>
+    // Spotify IFrame API — runs once, player persists across PJAX navigation
+    var _pageBaseTitle = document.title;
+
+    window.onSpotifyIframeApiReady = function(IFrameAPI) {
+      // Guard: prevent reinitializing player (only create once, persists across page navigation)
+      if (window._spotifyController) return;
+      
+      var el = document.getElementById('spotify-player');
+      if (!el) return;
+      var options = {
+        uri: 'spotify:playlist:1JEny7rbDkbd2mSVaRdDrr',
+        height: '400',
+        width: '100%'
+      };
+      IFrameAPI.createController(el, options, function(EmbedController) {
+        window._spotifyController = EmbedController;
+
+        // Guard: only call play() once — 'ready' can fire multiple times
+        // (once when the controller loads, again when the playlist resolves).
+        // A second play() call toggles the embed to paused.
+        var _played = false;
+        EmbedController.addListener('ready', function() {
+          if (!_played) { _played = true; EmbedController.play(); }
+        });
+
+        function updateNowPlaying(name) {
+          if (!name) return;
+          var npEl = document.getElementById('np-title');
+          if (npEl) npEl.textContent = name;
+          document.title = '♪ ' + name + ' — ' + _pageBaseTitle;
+        }
+
+        // The IFrame API passes the payload DIRECTLY to the callback (no .data wrapper).
+        // Track name lives at e.track_window.current_track.name
+        EmbedController.addListener('playback_update', function(e) {
+          var name =
+            (e && e.track_window && e.track_window.current_track && e.track_window.current_track.name) ||
+            (e && e.data && e.data.track_window && e.data.track_window.current_track && e.data.track_window.current_track.name) ||
+            (e && e.data && e.data.track && e.data.track.name) ||
+            (e && e.track && e.track.name) ||
+            null;
+          if (name) updateNowPlaying(name);
+        });
+
+        // Poll for current track every 2 seconds as a fallback
+        window._spotifyNowPlayingInterval = setInterval(function() {
+          EmbedController.getStatus(function(status) {
+            if (status && status.playerState && status.playerState.track && status.playerState.track.name) {
+              updateNowPlaying(status.playerState.track.name);
+            }
+          });
+        }, 2000);
+      });
+    };
+
+    // Raw postMessage fallback — intercept Spotify iframe messages directly
+    // in case the IFrame API abstraction loses the track data
+    window.addEventListener('message', function(evt) {
+      if (!String(evt.origin).includes('spotify')) return;
+      var d = evt.data;
+      if (typeof d === 'string') { try { d = JSON.parse(d); } catch(_) { return; } }
+      var payload = (d && d.payload) || d;
+      var tw = payload && payload.track_window;
+      if (tw && tw.current_track && tw.current_track.name) {
+        var name = tw.current_track.name;
+        var npEl = document.getElementById('np-title');
+        if (npEl) npEl.textContent = name;
+        document.title = '♪ ' + name + ' — ' + _pageBaseTitle;
+      }
+    });
+  </script>
+</body>
+</html>

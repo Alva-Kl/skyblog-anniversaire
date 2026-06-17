@@ -1,0 +1,90 @@
+<%
+function formatDate(dt) {
+  if (!dt) return '';
+  try {
+    const d = new Date(dt.replace(' ', 'T') + 'Z');
+    return d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch(e) { return dt; }
+}
+%>
+
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div class="flash <%= flash.type %>"><%= flash.msg %></div>
+<% } %>
+
+<% if (user) { %>
+  <a href="/article/new" class="new-article-btn">pr posté c ici !!!</a>
+<% } else { %>
+  <div class="flash" style="background:#1a1a2a;border-color:#334;color:#88a;margin-bottom:8px;">
+    <a href="/login">Conekt toa</a> ou <a href="/register">1skri toi</a> pr laché un com <3
+  </div>
+<% } %>
+
+<!-- SORT BAR -->
+<div class="sort-bar">
+  <span class="sort-label">tri :</span>
+  <a href="/?sort=oldest"   class="sort-tab <%= sort === 'oldest'   ? 'active' : '' %>">vieu</a>
+  <a href="/?sort=recent"   class="sort-tab <%= sort === 'recent'   ? 'active' : '' %>">nouvo</a>
+  <a href="/?sort=upvotes"  class="sort-tab <%= sort === 'upvotes'  ? 'active' : '' %>">👍pouce</a>
+  <a href="/?sort=downvotes"class="sort-tab <%= sort === 'downvotes'? 'active' : '' %>">👎pa pouce</a>
+</div>
+
+<% if (articles.length === 0) { %>
+  <div class="article-card">
+    <div class="article-body" style="text-align:center;padding:40px;color:#666;">
+      eh ya encore R mdr
+    </div>
+  </div>
+<% } %>
+
+<% articles.forEach(function(article) { %>
+  <div class="article-card" data-id="<%= article.id %>">
+    <div class="article-title-bar">
+      <h2><a href="/article/<%= article.id %>"><%= article.title %></a></h2>
+    </div>
+    <div class="article-body">
+      <%- article.content %>
+    </div>
+    <% if (article.photos && article.photos.length > 0) { %>
+      <div class="article-photos">
+        <% article.photos.forEach(function(photo) { %>
+          <div class="article-photo-item">
+            <img src="/uploads/<%= photo.filename %>"
+                 alt=""
+                 onclick="openLightbox('/uploads/<%= photo.filename %>', '')"
+                 loading="lazy">
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+    <div class="article-footer">
+      <div class="article-meta">
+        <span>Posté le <%= formatDate(article.created_at) %></span>
+        <span>par <span class="author"><%= article.author_name %></span></span>
+        <a href="/article/<%= article.id %>#comments" style="color:#888;">💬 <%= article.comment_count || 0 %></a>
+      </div>
+      <div class="article-votes">
+        <%- voteButtons(article, user) %>
+      </div>
+      <div class="article-actions">
+        <% if (user && (user.id === article.author_id || user.is_admin)) { %>
+          <a href="/article/<%= article.id %>/edit" class="edit">✏️ Modifier</a>
+          <form method="POST" action="/article/<%= article.id %>/delete" style="display:inline;" onsubmit="return confirm('Supprimer cet article ?')">
+            <button type="submit" class="delete">🗑 Supprimer</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+<% }); %>
+
+<% if (totalPages > 1) { %>
+  <div class="pagination">
+    <% if (page > 1) { %><a href="/?sort=<%= sort %>&page=<%= page-1 %>">« précédent</a><% } %>
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <% if (i === page) { %><span class="current"><%= i %></span>
+      <% } else { %><a href="/?sort=<%= sort %>&page=<%= i %>"><%= i %></a><% } %>
+    <% } %>
+    <% if (page < totalPages) { %><a href="/?sort=<%= sort %>&page=<%= page+1 %>">suivant »</a><% } %>
+  </div>
+<% } %>
