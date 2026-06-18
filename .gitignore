@@ -1,4 +1,6 @@
 node_modules/
 .env
-db/
+db/skyblog.db
+db/skyblog.db-shm
+db/skyblog.db-wal
 public/uploads/
