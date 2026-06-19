@@ -1,13 +1,3 @@
-<%
-function formatDate(dt) {
-  if (!dt) return '';
-  try {
-    const d = new Date(dt.replace(' ', 'T') + 'Z');
-    return d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  } catch(e) { return dt; }
-}
-%>
-
 <% if (typeof flash !== 'undefined' && flash) { %>
   <div class="flash <%= flash.type %>"><%= flash.msg %></div>
 <% } %>
@@ -33,9 +23,9 @@ function formatDate(dt) {
   <% } %>
   <div class="article-footer">
     <div class="article-meta">
-      <span>Posté le <%= formatDate(article.created_at) %></span>
+      <span>Posté le <span class="js-local-datetime" data-utc="<%= article.created_at %>"><%= article.created_at %></span></span>
       <% if (article.updated_at && article.updated_at !== article.created_at) { %>
-        &nbsp;· Modifié le <%= formatDate(article.updated_at) %>
+        &nbsp;· Modifié le <span class="js-local-datetime" data-utc="<%= article.updated_at %>"><%= article.updated_at %></span>
       <% } %>
       <span>par <span class="author"><%= article.author_name %></span></span>
     </div>
@@ -68,7 +58,7 @@ function formatDate(dt) {
       <div class="comment-item">
         <div class="comment-meta">
           <span class="comment-author"><%= comment.author_name %></span>
-          <span class="comment-date"><%= formatDate(comment.created_at) %></span>
+          <span class="comment-date js-local-datetime" data-utc="<%= comment.created_at %>"><%= comment.created_at %></span>
           <% if (user && (user.id === comment.author_id || user.is_admin)) { %>
             <form method="POST" action="/comment/<%= comment.id %>/delete" style="display:inline;" data-confirm="Supprimer ce commentaire ?">
               <button type="submit" class="comment-delete">✕ Supprimer</button>

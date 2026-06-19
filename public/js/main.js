@@ -259,11 +259,36 @@ document.addEventListener('keydown', function(e) {
 
 var photoFiles = [];
 
+function formatLocalDateTime(value) {
+  if (!value) return '';
+  var normalized = String(value).trim().replace(' ', 'T');
+  if (!/[zZ]|[+-]\d{2}:?\d{2}$/.test(normalized)) {
+    normalized += 'Z';
+  }
+  var date = new Date(normalized);
+  if (isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date);
+}
+
+function initLocalDateTimes() {
+  document.querySelectorAll('.js-local-datetime').forEach(function(el) {
+    var utc = el.dataset.utc || el.textContent;
+    el.textContent = formatLocalDateTime(utc);
+  });
+}
+
 function initPage() {
   photoFiles = []; // reset upload state for article forms
   initEditor();
   initArticleFormSubmit();
   initPhotoUpload();
+  initLocalDateTimes();
   updateBalloonParallax();
   initBalloonLayout();
   updateBalloonPositions();

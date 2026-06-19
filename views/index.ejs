@@ -1,13 +1,3 @@
-<%
-function formatDate(dt) {
-  if (!dt) return '';
-  try {
-    const d = new Date(dt.replace(' ', 'T') + 'Z');
-    return d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  } catch(e) { return dt; }
-}
-%>
-
 <% if (typeof flash !== 'undefined' && flash) { %>
   <div class="flash <%= flash.type %>"><%= flash.msg %></div>
 <% } %>
@@ -59,7 +49,7 @@ function formatDate(dt) {
     <% } %>
     <div class="article-footer">
       <div class="article-meta">
-        <span>Posté le <%= formatDate(article.created_at) %></span>
+        <span>Posté le <span class="js-local-datetime" data-utc="<%= article.created_at %>"><%= article.created_at %></span></span>
         <span>par <span class="author"><%= article.author_name %></span></span>
         <a href="/article/<%= article.id %>#comments" style="color:#888;">💬 <%= article.comment_count || 0 %></a>
       </div>
